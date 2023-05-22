@@ -6,7 +6,7 @@ const sqlite3 = require('sqlite3').verbose();
 const DBPATH = '../data/Programacao_S2.db';
 
 const hostname = '127.0.0.1';
-const port = 3003;
+const port = 3000;
 const app = express();
 
 /* Colocar toda a parte estática no frontend */
@@ -21,7 +21,7 @@ app.get('/usuarios', (req, res) => {
 	res.statusCode = 200;
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	var db = new sqlite3.Database(DBPATH); // Abre o banco
-	var sql = 'SELECT * FROM User';
+	var sql = 'SELECT * FROM User ORDER BY Nome COLLATE NOCASE';
 		db.all(sql, [],  (err, rows ) => {
 			if (err) {
 				throw err;
@@ -36,7 +36,7 @@ app.post('/insereUsuario', urlencodedParser, (req, res) => {
 	res.statusCode = 200;
 	res.setHeader('Access-Control-Allow-Origin', '*'); 
 	var db = new sqlite3.Database(DBPATH); // Abre o banco
-	sql = "INSERT INTO User (Nome, Email, Telefone, Endereço, Descrição) VALUES ('" + req.body.Nome + "', '" + req.body.Email + "', '" + req.body.Telefone + "' , '" + req.body.Endereço + "' , '" + req.body.Descrição + "')";
+	sql = "INSERT INTO User (Nome, Idade, Email, Telefone, Endereco, Descricao) VALUES ('" + req.body.Nome + "', '" + req.body.Idade + "', ' " + req.body.Email + "', '"+ req.body.Telefone + "', '" + req.body.Endereco + "', '" + req.body.Descricao + ")";
 	console.log(sql);
 	db.run(sql, [],  err => {
 		if (err) {
@@ -52,7 +52,7 @@ app.post('/insereUsuario', urlencodedParser, (req, res) => {
 app.get('/atualizaUsuario', (req, res) => {
 	res.statusCode = 200;
 	res.setHeader('Access-Control-Allow-Origin', '*'); 
-	sql = "SELECT * FROM User WHERE ID_User="+ req.query.userId;
+	sql = "SELECT * FROM usuario WHERE userId="+ req.query.userId;
 	console.log(sql);
 	var db = new sqlite3.Database(DBPATH); // Abre o banco
 	db.all(sql, [],  (err, rows ) => {
@@ -68,7 +68,7 @@ app.get('/atualizaUsuario', (req, res) => {
 app.post('/atualizaUsuario', urlencodedParser, (req, res) => {
 	res.statusCode = 200;
 	res.setHeader('Access-Control-Allow-Origin', '*'); 
-	sql = "UPDATE usuario SET Nome='" + req.body.nome + "', Email = '" + req.body.email + "' , Telefone='" + req.body.telefone + "' WHERE ID_User ='" + req.body.userId + "'";
+	sql = "UPDATE usuario SET nome_completo='" + req.body.nome + "', email = '" + req.body.email + "' , telefone='" + req.body.telefone + "' WHERE userId='" + req.body.userId + "'";
 	console.log(sql);
 	var db = new sqlite3.Database(DBPATH); // Abre o banco
 	db.run(sql, [],  err => {
@@ -85,7 +85,7 @@ app.post('/atualizaUsuario', urlencodedParser, (req, res) => {
 app.get('/removeUsuario', urlencodedParser, (req, res) => {
 	res.statusCode = 200;
 	res.setHeader('Access-Control-Allow-Origin', '*'); 
-	sql = "DELETE FROM User WHERE ID_User='" + req.query.userId + "'";
+	sql = "DELETE FROM usuario WHERE userId='" + req.query.userId + "'";
 	console.log(sql);
 	var db = new sqlite3.Database(DBPATH); // Abre o banco
 	db.run(sql, [],  err => {
